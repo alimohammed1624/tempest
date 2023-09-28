@@ -16,6 +16,11 @@ the temperature.
 key = "e4418a5d189b4f9399e11616232809"
 
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"data": "Healthy"})
+
+
 @app.route("/fetch", methods=["GET"])
 def fetch():
     city = request.args.get("city", "")

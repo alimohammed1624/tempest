@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import requests
 
 app = Flask(__name__)
+
+
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"data": "Healthy"})
 
 
 @app.route("/")
 def main():
     return """
     <h1>Tempest</h1>
-    Enter a city to fetch temperature!
+    Enter a city to fetch temperature consistency data for the next 5 days!
     <form action="/fetch" method="GET">
         <input name="city">
-        <input type="submit" value="Fetch!">
+        <input type="submit" value="Fetch">
     </form>
     <form action="/disp" method="GET">
-        <input type="submit" value="Display all records!">
+        <input type="submit" value="Display all records">
     </form>
     """
 
@@ -30,17 +35,17 @@ def fetch():
         return f"""
             {data.json()["error"]["message"]}
             <form action="/" method="GET">
-                <input type="submit" value="Back to Home!">
+                <input type="submit" value="Back to Home">
             </form>
         """
     return f"""
         Added to database!
         {render_table([data.json()])}
         <form action="/disp" method="GET">
-            <input type="submit" value="Display All!">
+            <input type="submit" value="Display All">
         </form>
         <form action="/" method="GET">
-            <input type="submit" value="Back to Home!">
+            <input type="submit" value="Back to Home">
         </form>
     """
 
@@ -51,7 +56,7 @@ def disp():
     return f"""
         {render_table(data)}
         <form action="/" method="GET">
-            <input type="submit" value="Back to Home!">
+            <input type="submit" value="Back to Home">
         </form>
     """
 

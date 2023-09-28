@@ -17,3 +17,9 @@ jobs:
         run: |
           docker compose down
           docker compose up -d
+
+      - name: Test App
+        run: |
+          cd test/
+          pip install pytest
+          pytest test.py

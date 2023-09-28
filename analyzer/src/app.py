@@ -1,3 +1,4 @@
+import math
 import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -21,6 +22,11 @@ class Processed(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     city = db.Column(db.String(100), nullable=False)
     index = db.Column(db.Float, nullable=False)
+
+
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"data": "Healthy"})
 
 
 @app.route("/fetchall", methods=["GET"])
@@ -57,8 +63,8 @@ def process_data(temperature, raw: Raw):
     average = sum(temps) / len(temps)
     for item in temps:
         standard_deviation += item**2 / len(temps)
-    standard_deviation = standard_deviation
-    index = standard_deviation / average
+    standard_deviation = math.sqrt(standard_deviation - average**2)
+    index = standard_deviation * 10
     data = Processed(id=raw.id, timestamp=raw.timestamp, city=raw.city, index=index)
     db.session.add(data)
     db.session.commit()
