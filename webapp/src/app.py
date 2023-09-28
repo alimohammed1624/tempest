@@ -24,7 +24,7 @@ def main():
 @app.route("/fetch", methods=["GET"])
 def fetch():
     data = requests.get(
-        "http://127.0.0.1:8001/fetch", params={"city": request.args.get("city")}
+        "http://analyzer:8001/fetch", params={"city": request.args.get("city")}
     )
     if data.json().get("error") is not None:
         return f"""
@@ -33,10 +33,11 @@ def fetch():
                 <input type="submit" value="Back to Home!">
             </form>
         """
-    return """
+    return f"""
         Added to database!
+        {render_table([data.json()])}
         <form action="/disp" method="GET">
-            <input type="submit" value="Display!">
+            <input type="submit" value="Display All!">
         </form>
         <form action="/" method="GET">
             <input type="submit" value="Back to Home!">
@@ -46,7 +47,7 @@ def fetch():
 
 @app.route("/disp", methods=["GET"])
 def disp():
-    data = (requests.get("http://127.0.0.1:8001/fetchall")).json().get("data")
+    data = (requests.get("http://analyzer:8001/fetchall")).json().get("data")
     return f"""
         {render_table(data)}
         <form action="/" method="GET">
@@ -57,8 +58,8 @@ def disp():
 
 def render_table(data):
     table = "<table border = 1>"
-    table += "<tr><th>City</th><th>Index</th><th>Time</th></tr>"
+    table += "<tr><th>City</th><th>Weather Variation Index</th><th>Time</th></tr>"
     for row in data:
-        table += f"<tr><td>{row.get('city')}</td><td>{row.get('index')}</td><td>{row.get('timestamp')}</td></tr>"
+        table += f"<tr><td>{row.get('city')}</td><td>{row.get('index')}%</td><td>{row.get('timestamp')}</td></tr>"
     table += "</table>"
     return table

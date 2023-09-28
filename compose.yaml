@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  collector:  # ai-engine
+    build: ./collector
+    entrypoint: ./entrypoint.sh
+    environment:
+      - API_KEY=${API_KEY}
+    ports:
+      - 8002:8002
+    networks:
+      - network
+
+  analyzer:
+    build: ./analyzer
+    entrypoint: ./entrypoint.sh
+    ports: 
+      - 8001:8001
+    networks:
+      - network
+
+  webapp:
+    build: ./webapp
+    entrypoint: ./entrypoint.sh
+    ports:
+      - 8000:8000
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

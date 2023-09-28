@@ -39,7 +39,7 @@ def fetchall():
 def fetch():
     city = request.args.get("city", "")
     temperature = requests.get(
-        "http://127.0.0.1:8002/fetch", params={"city": city}
+        "http://collector:8002/fetch", params={"city": city}
     ).json()
     if temperature.get("error") is not None:
         return jsonify({"error": temperature.get("error")})
@@ -57,7 +57,7 @@ def process_data(temperature, raw: Raw):
     average = sum(temps) / len(temps)
     for item in temps:
         standard_deviation += item**2 / len(temps)
-    standard_deviation = standard_deviation**0.5
+    standard_deviation = standard_deviation
     index = standard_deviation / average
     data = Processed(id=raw.id, timestamp=raw.timestamp, city=raw.city, index=index)
     db.session.add(data)
